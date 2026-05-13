@@ -1,7 +1,7 @@
 # Capacity-Gated Forgetting in LoRA Fine-Tuning
 ### Rank, Proximity, and Endogenous Replay in Medical LLMs
 
-> Preliminary work submitted to ICML 2026. Do not distribute.
+
 
 ---
 
@@ -14,6 +14,18 @@ We run a controlled 11-experiment battery fine-tuning **Qwen3.5-9B-Base** on **M
 - **Capacity-Gated Forgetting (CGF):** A falsifiable hypothesis that the capacity ratio `ρ = r_LoRA / d*(D_ft)` predicts two qualitatively distinct forgetting regimes — uniform forgetting below a critical threshold `ρ*`, and proximity-structured forgetting above it.
 - **Endogenous Replay (SSRA):** A replay method in which the rehearsal corpus is generated from the base model itself. It achieves an **80% reduction in forgetting** over no replay and ~50% over real-text replay at matched sample budget, without sacrificing MedQA target accuracy.
 
+The Problem We Are Solving
+A hospital wants to use an AI model to help doctors. They train it on their patient records and clinical guidelines. It gets very good at medicine. But what else did it quietly forget?
+
+The central clinical problem: When you fine-tune a large language model on medical data, it improves at medical tasks — but we have no principled way to predict which other knowledge domains it will damage, how severely, or whether the damage is random or follows a pattern. Today's standard practice is to report one single accuracy number on a benchmark before and after fine-tuning. That hides everything.
+Imagine a model that scores 75% on a general knowledge test before medical fine-tuning. After training on clinical data, it scores 73%. That aggregate 2% drop sounds acceptable. But inside that 2% average might be: abstract algebra dropped 12%, pharmacology improved 8%, jurisprudence dropped 0%. If the model is used in a hospital to advise on drug interactions that require knowledge of both medicine AND chemistry AND law, these invisible subject-level drops become patient safety issues.
+
+What
+We map exactly which of MMLU's 57 knowledge subjects are damaged by medical fine-tuning — the first per-subject forgetting profile of its kind.
+Why
+Because aggregate benchmarks hide the damage. A hospital deploying an AI model needs to know which corners of knowledge were lost, not just a single number.
+How
+By testing the model on all 57 subjects before and after fine-tuning, then computing whether the damage correlates with how semantically close each subject is to medicine.
 ---
 
 ## Key Results
@@ -177,19 +189,6 @@ By construction, endogenous samples minimise the KL anchoring objective `E[KL(p_
 
 ---
 
-## Citation
-
-```bibtex
-@inproceedings{cgf2026,
-  title     = {Capacity-Gated Forgetting in LoRA Fine-Tuning: Rank, Proximity,
-               and Endogenous Replay in Medical LLMs},
-  author    = {Anonymous Authors},
-  booktitle = {International Conference on Machine Learning (under review)},
-  year      = {2026}
-}
-```
-
----
 
 ## References
 
