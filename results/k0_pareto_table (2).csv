@@ -1,0 +1,4 @@
+condition,MedQA_acc,MMLU_forgetting_paper
+E02 (no replay),0.78,0.352
+E10 (100 real),0.775,0.142
+E11 (100 endo),0.785,0.07
